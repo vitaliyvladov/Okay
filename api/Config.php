@@ -16,6 +16,8 @@ class Config {
     
     /*Файл для хранения настроек*/
     public $config_file = 'config/config.php';
+
+    public $config_develop_file = 'config/config.develop.php';
     
     private $vars = array();
 
@@ -29,6 +31,14 @@ class Config {
         /*Записываем настройку как переменную класса*/
         foreach($ini as $var=>$value) {
             $this->vars[$var] = $value;
+        }
+
+        /* Заменяем настройки если есть конфиг разработки */
+        if (file_exists(dirname(dirname(__FILE__)).'/'.$this->config_develop_file)) {
+            $ini = parse_ini_file(dirname(dirname(__FILE__)) . '/' . $this->config_develop_file);
+            foreach ($ini as $var => $value) {
+                $this->vars[$var] = $value;
+            }
         }
         
         // Вычисляем DOCUMENT_ROOT вручную, так как иногда в нем находится что-то левое

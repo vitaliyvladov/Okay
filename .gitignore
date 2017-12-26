@@ -16,6 +16,8 @@ files/*_resized/*.tif
 files/*_resized/*.bmp
 files/*_resized/*.ico
 
+config/config.develop.php
+
 .idea/
 tmp/
 nbproject/
