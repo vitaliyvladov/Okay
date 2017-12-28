@@ -388,9 +388,11 @@ class Database extends Okay {
         fclose($h);
     }
     
-    public function restore($filename) {
+    public function restore($filename, $return_errors = false) {
         $templine = '';
         $h = fopen($filename, 'r');
+
+        $errors = array();
     
         // Loop through each line
         if($h)
@@ -407,7 +409,13 @@ class Database extends Okay {
                     if (substr(trim($line), -1, 1) == ';')
                     {
                         // Perform the query
-                        $this->mysqli->query($templine) or print('Error performing query \'<b>'.$templine.'</b>\': '.$this->mysqli->error.'<br/><br/>');
+                        if (!$this->mysqli->query($templine)) {
+                            if (!$return_errors) {
+                                print('Error performing query \'<b>'.$templine.'</b>\': '.$this->mysqli->error.'<br/><br/>');
+                            } else {
+                                $errors[] = str_replace(PHP_EOL, "", $templine).PHP_EOL.'---'.$this->mysqli->error;
+                            }
+                        }
                         // Reset temp variable to empty
                         $templine = '';
                     }
@@ -415,6 +423,7 @@ class Database extends Okay {
             }
         }
         fclose($h);
+        return $errors;
     }
 
     /*Создаем бекап таблицы*/

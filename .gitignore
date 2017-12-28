@@ -17,6 +17,7 @@ files/*_resized/*.bmp
 files/*_resized/*.ico
 
 config/config.develop.php
+1DB_changes/
 
 .idea/
 tmp/

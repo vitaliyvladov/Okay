@@ -1,6 +1,14 @@
 SET NAMES utf8;
 SET time_zone = '+00:00';
 
+DROP TABLE IF EXISTS `mi_executed_migration`;
+CREATE TABLE `mi_executed_migration` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(1024) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `ok_banners`;
 CREATE TABLE `ok_banners` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
