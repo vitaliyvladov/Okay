@@ -15,8 +15,6 @@ cml/.passwd
 config/config.develop.php
 1DB_changes/
 1README/
-migration/migrate.bat
-migration/migrate.sh
 
 .idea/
 tmp/
