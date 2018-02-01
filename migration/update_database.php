@@ -11,7 +11,7 @@ if (!empty($exist)) {
     $already_executed = $okay->db->results('name');
 }
 
-foreach (glob("migration/sql/*.up.sql") as $path) {
+foreach (glob(MIGRATION_DIR."sql/*.up.sql") as $path) {
     $file = pathinfo($path, PATHINFO_BASENAME);
     if (!in_array($file, $already_executed)) {
         $errors = $okay->db->restore($path, true);

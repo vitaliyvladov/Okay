@@ -6,17 +6,18 @@
 */
 
 define("ROOT_DIR", dirname(__DIR__)."/");
+define("MIGRATION_DIR", ROOT_DIR."migration/");
 chdir(ROOT_DIR);
 
 $action = !empty($argv[1]) ? $argv[1] : "update";
 switch ($action) {
     case 'update': {
-        require_once("migration/update_database.php");
+        require_once(MIGRATION_DIR."update_database.php");
         break;
     }
     case 'create': {
         $name = date("YmdHis").(empty($argv[2]) ? '' : '_'.$argv[2]).".up.sql";
-        fclose(fopen(ROOT_DIR."migration/sql/".$name, "w"));
+        fclose(fopen(MIGRATION_DIR."sql/".$name, "w"));
         break;
     }
     default: {

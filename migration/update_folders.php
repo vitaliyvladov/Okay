@@ -1,6 +1,6 @@
 <?php
 
-require_once("migration/Folders.php");
+require_once(MIGRATION_DIR."Folders.php");
 
 /* files and folders which will be in .gitignore, should be created here */
 /*
