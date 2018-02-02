@@ -17,6 +17,7 @@ config/config.develop.php
 1README/
 
 build/stdout
+build/log/*.log
 
 .idea/
 tmp/

@@ -4,7 +4,7 @@ ini_set('display_errors', 'off');
 
 $bitbucket_ips = array('34.198.203.127', '34.198.178.64', '34.198.32.85', '127.0.0.1');
 $bitbucket_cidrs = array('104.192.136.0/21');
-$path_to_php = '/usr/local/php56/bin/';
+$path_to_php = '';
 
 if (in_array($_SERVER['REMOTE_ADDR'], $bitbucket_ips) || cidr_match($_SERVER['REMOTE_ADDR'], $bitbucket_cidrs)) {
     

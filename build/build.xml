@@ -4,13 +4,22 @@
     <target name="vars">
         <resolvepath propertyName="root.path" file=".."/>
         <echo msg="Root path: '${root.path}'" />
+
+        <property name="log.checkout" value="${root.path}/build/log/checkout.log"/>
+        <property name="log.untracked" value="${root.path}/build/log/untracked.log"/>
+        <exec command="date +'%d.%m.%Y %H:%M:%S' >> ${log.checkout}" checkreturn="true" passthru="true" error="stdout"/>
+        <exec command="date +'%d.%m.%Y %H:%M:%S' >> ${log.untracked}" checkreturn="true" passthru="true" error="stdout"/>
     </target>
 
     <target name="git">
         <echo msg="Begin 'git checkout -- ${root.path}/'"/>
+        <exec command="git diff --name-status | xargs -0 >> ${log.checkout}" checkreturn="true" passthru="true" error="stdout"/>
+        <exec command="git ls-files ${root.path}/ --others --exclude-standard | xargs -0 >> ${log.untracked}" checkreturn="true" passthru="true" error="stdout"/>
         <exec command="git checkout -- ${root.path}/" checkreturn="true" passthru="true" error="stdout"/>
+
         <echo msg="Begin 'git checkout ${branch}'"/>
         <exec command="git checkout ${branch}" checkreturn="true" passthru="true" error="stdout"/>
+
         <echo msg="Begin 'git pull origin ${branch}'" />
         <exec command="git pull origin ${branch}" checkreturn="true" passthru="true" error="stdout" />
     </target>
