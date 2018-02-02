@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="autodeploy" default="build">
+
+    <target name="vars">
+        <resolvepath propertyName="root.path" file=".."/>
+        <echo msg="root path '${root.path}'" />
+    </target>
+
+    <target name="git">
+        <echo msg="begin git pull origin ${branch}" />
+        <exec command="git pull origin ${branch}" checkreturn="true" passthru="true" error="stdout" />
+    </target>
+
+    <target name="clear_cache">
+        <echo>Clear compiled</echo>
+        <delete>
+            <fileset dir="${root.path}/compiled"></fileset>
+        </delete>
+        <delete>
+            <fileset dir="${root.path}/simpla/design/compiled"></fileset>
+        </delete>
+    </target>
+
+    <target name="build" depends="vars, git, clear_cache"></target>
+</project>

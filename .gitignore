@@ -16,6 +16,8 @@ config/config.develop.php
 1DB_changes/
 1README/
 
+build/stdout
+
 .idea/
 tmp/
 nbproject/

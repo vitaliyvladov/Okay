@@ -6,7 +6,7 @@
 */
 
 define("ROOT_DIR", dirname(__DIR__)."/");
-define("MIGRATIONS_DIR", ROOT_DIR."migration/migrations/");
+define("MIGRATIONS_DIR", ROOT_DIR."build/migrations/");
 chdir(ROOT_DIR);
 
 $action = !empty($argv[1]) ? $argv[1] : "update";
