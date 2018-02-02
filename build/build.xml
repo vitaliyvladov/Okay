@@ -3,23 +3,36 @@
 
     <target name="vars">
         <resolvepath propertyName="root.path" file=".."/>
-        <echo msg="root path '${root.path}'" />
+        <echo msg="Root path: '${root.path}'" />
     </target>
 
     <target name="git">
-        <echo msg="begin git pull origin ${branch}" />
+        <echo msg="Begin 'git checkout -- ${root.path}/'"/>
+        <exec command="git checkout -- ${root.path}/" checkreturn="true" passthru="true" error="stdout"/>
+        <echo msg="Begin 'git checkout ${branch}'"/>
+        <exec command="git checkout ${branch}" checkreturn="true" passthru="true" error="stdout"/>
+        <echo msg="Begin 'git pull origin ${branch}'" />
         <exec command="git pull origin ${branch}" checkreturn="true" passthru="true" error="stdout" />
     </target>
 
     <target name="clear_cache">
-        <echo>Clear compiled</echo>
+        <echo msg="Clear compiled"/>
         <delete>
-            <fileset dir="${root.path}/compiled"></fileset>
+            <fileset dir="${root.path}/compiled">
+                <exclude name=".keep_folder"/>
+            </fileset>
         </delete>
         <delete>
-            <fileset dir="${root.path}/simpla/design/compiled"></fileset>
+            <fileset dir="${root.path}/backend/design/compiled">
+                <exclude name=".keep_folder"/>
+            </fileset>
         </delete>
     </target>
 
-    <target name="build" depends="vars, git, clear_cache"></target>
+    <target name="migrate">
+        <echo msg="Begin migration '${php_path}php ${root.path}/build/migrate.php'"/>
+        <exec command="${php_path}php ${root.path}/build/migrate.php" checkreturn="true" passthru="true" error="stdout"/>
+    </target>
+
+    <target name="build" depends="vars, git, migrate, clear_cache"/>
 </project>

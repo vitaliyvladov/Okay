@@ -35,7 +35,7 @@ if (in_array($_SERVER['REMOTE_ADDR'], $bitbucket_ips) || cidr_match($_SERVER['RE
     }
     
     $dir = dirname(__DIR__);
-    exec("{$path_to_php}php {$dir}/build/bin/phing.phar -f {$dir}/build/build.xml -Dbranch=\"{$branch}\"", $output);
+    exec("{$path_to_php}php {$dir}/build/bin/phing.phar -f {$dir}/build/build.xml -Dbranch=\"{$branch}\" -Dphp_path=\"{$path_to_php}\"", $output);
     print 'OK'.PHP_EOL;
     foreach ($output as $out) {
         print $out.PHP_EOL;
