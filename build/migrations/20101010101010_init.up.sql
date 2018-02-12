@@ -127,12 +127,14 @@ CREATE TABLE `ok_categories` (
   `auto_meta_desc` varchar(512) NOT NULL DEFAULT '',
   `auto_description` text NOT NULL,
   `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `url` (`url`),
   KEY `parent_id` (`parent_id`),
   KEY `position` (`position`),
   KEY `visible` (`visible`),
-  KEY `external_id` (`external_id`)
+  KEY `external_id` (`external_id`),
+  KEY `created` (`created`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -748,7 +750,7 @@ INSERT INTO `ok_settings` (`setting_id`, `name`, `value`) VALUES
 (114,	'watermark_offset_x',	'50'),
 (115,	'watermark_offset_y',	'50'),
 (116,	'watermark_transparency',	'50'),
-(117,	'images_sharpen',	'15'),
+(117,	'images_sharpen',	'20'),
 (120,	'comparison_count',	'5'),
 (121,	'is_preorder',	'1'),
 (132,	'posts_num',	'10'),
@@ -758,7 +760,7 @@ INSERT INTO `ok_settings` (`setting_id`, `name`, `value`) VALUES
 (137,	'captcha_register',	'1'),
 (138,	'captcha_feedback',	'1'),
 (139,	'site_work',	'on'),
-(152,	'image_quality',	'50'),
+(152,	'image_quality',	'100'),
 (153,	'email_lang',	'ru'),
 (154,	'site_logo',	'logo.png'),
 (155,	'gather_enabled',	'1'),
