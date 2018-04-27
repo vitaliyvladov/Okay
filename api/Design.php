@@ -24,8 +24,63 @@ class Design extends Okay {
         
         // Берем тему из настроек
         $theme = $this->settings->theme;
-        
-        
+
+        $smarty_security = $this->config->smarty_security;
+        if ($smarty_security == true) {
+            // Настраиваем безопасный режим
+            $this->smarty->enableSecurity();
+            $this->smarty->security_policy->php_modifiers = array(
+                'escape',
+                'cat',
+                'count',
+                'in_array',
+                'nl2br',
+                'str_replace',
+                'reset',
+                'floor',
+                'round',
+                'ceil',
+                'max',
+                'min',
+                'number_format',
+                'print_r',
+                'var_dump',
+                'printa',
+                'file_exists',
+            );
+
+            $this->smarty->security_policy->php_functions = array(
+                'isset',
+                'empty',
+                'count',
+                'sizeof',
+                'in_array',
+                'is_array',
+                'time',
+                'nl2br',
+                'str_replace',
+                'reset',
+                'floor',
+                'round',
+                'ceil',
+                'max',
+                'min',
+                'array',
+                'number_format',
+                'base64_encode',
+                'implode',
+                'explode',
+                'print_r',
+                'var_dump',
+                'file_exists',
+            );
+
+            $this->smarty->security_policy->secure_dir = array(
+                $this->config->root_dir . '/design/' . $theme,
+                $this->config->root_dir . '/backend/design',
+            );
+        }
+
         $this->smarty->compile_dir = $this->config->root_dir.'/compiled/'.$theme;
         $this->smarty->template_dir = $this->config->root_dir.'/design/'.$theme.'/html';
         
