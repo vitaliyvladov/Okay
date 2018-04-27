@@ -17,7 +17,7 @@ class Config {
     /*Файл для хранения настроек*/
     public $config_file = 'config/config.php';
 
-    public $config_develop_file = 'config/config.develop.php';
+    public $config_develop_file = 'config/config.local.php';
     
     private $vars = array();
 

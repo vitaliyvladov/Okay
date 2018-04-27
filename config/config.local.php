@@ -15,3 +15,6 @@ db_password = ""
 
 ;Имя базы
 db_name = "okay_develop"
+
+[php]
+path_to_php =

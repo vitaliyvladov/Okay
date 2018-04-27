@@ -12,7 +12,7 @@ cml/*/*.*
 cml/*/*/*.*
 cml/.passwd
 
-config/config.develop.php
+config/config.local.php
 1DB_changes/
 1README/
 
@@ -25,3 +25,5 @@ nbproject/
 
 !*.keep_folder
 !*.htaccess
+cml/.htaccess
+robots.txt

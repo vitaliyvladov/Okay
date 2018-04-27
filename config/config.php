@@ -39,6 +39,7 @@ php_locale_numeric = ru_RU
 php_locale_time = ru_RU
 ;php_timezone = Europe/Moscow
 debug_mode = false
+path_to_php =
 
 [smarty]
 
