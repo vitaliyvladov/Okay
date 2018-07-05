@@ -10,15 +10,14 @@ require_once('Okay.php');
 class Config {
 
     /*Версия системы*/
-    public $version = '2.1.6';
+    public $version = '2.2.0';
     /*Тип системы*/
     public $version_type = 'pro';
     
     /*Файл для хранения настроек*/
     public $config_file = 'config/config.php';
-
     public $config_develop_file = 'config/config.local.php';
-    
+
     private $vars = array();
 
     /*
@@ -33,14 +32,14 @@ class Config {
             $this->vars[$var] = $value;
         }
 
-        /* Заменяем настройки если есть конфиг разработки */
+        /*Заменяем настройки, если есть локальный конфиг*/
         if (file_exists(dirname(dirname(__FILE__)).'/'.$this->config_develop_file)) {
             $ini = parse_ini_file(dirname(dirname(__FILE__)) . '/' . $this->config_develop_file);
             foreach ($ini as $var => $value) {
                 $this->vars[$var] = $value;
             }
         }
-        
+
         // Вычисляем DOCUMENT_ROOT вручную, так как иногда в нем находится что-то левое
         $localpath=getenv("SCRIPT_NAME");
         $absolutepath=getenv("SCRIPT_FILENAME");

@@ -1,4 +1,5 @@
 compiled/*/*.php
+vendor/
 backend/design/compiled/*.php
 
 files/*/*.*
@@ -22,6 +23,7 @@ build/log/*.log
 .idea/
 tmp/
 nbproject/
+log/
 
 !*.keep_folder
 !*.htaccess
