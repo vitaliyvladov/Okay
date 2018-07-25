@@ -23,7 +23,7 @@ build/log/*.log
 .idea/
 tmp/
 nbproject/
-log/
+/log/
 
 !*.keep_folder
 !*.htaccess

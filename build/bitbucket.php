@@ -1,6 +1,6 @@
 <?php
 
-ini_set('display_errors', 'off');
+ini_set('display_errors', 'on');
 
 $bitbucket_ips = array('34.198.203.127', '34.198.178.64', '34.198.32.85', '127.0.0.1');
 $bitbucket_cidrs = array('104.192.136.0/21');

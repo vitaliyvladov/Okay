@@ -5,10 +5,9 @@
         <resolvepath propertyName="root.path" file=".."/>
         <echo msg="Root path: '${root.path}'" />
 
+        <property name="cmd.composer" value="${root.path}/build/bin/composer.phar"/>
         <property name="log.checkout" value="${root.path}/build/log/checkout.log"/>
         <property name="log.untracked" value="${root.path}/build/log/untracked.log"/>
-        <exec command="date +'%d.%m.%Y %H:%M:%S' >> ${log.checkout}" checkreturn="true" passthru="true" error="stdout"/>
-        <exec command="date +'%d.%m.%Y %H:%M:%S' >> ${log.untracked}" checkreturn="true" passthru="true" error="stdout"/>
     </target>
 
     <target name="git">
@@ -22,6 +21,11 @@
 
         <echo msg="Begin 'git pull origin ${branch}'" />
         <exec command="git pull origin ${branch}" checkreturn="true" passthru="true" error="stdout" />
+    </target>
+    
+    <target name="composer">
+        <echo msg="Begin 'composer install'" />
+        <exec command="${php_path}php ${cmd.composer} install --working-dir ${root.path}" checkreturn="true" passthru="true" error="stdout" />
     </target>
 
     <target name="clear_cache">
@@ -43,5 +47,5 @@
         <exec command="${php_path}php ${root.path}/build/migrate.php" checkreturn="true" passthru="true" error="stdout"/>
     </target>
 
-    <target name="build" depends="vars, git, migrate, clear_cache"/>
+    <target name="build" depends="vars, git, composer, migrate, clear_cache"/>
 </project>
