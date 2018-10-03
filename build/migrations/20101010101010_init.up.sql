@@ -853,6 +853,8 @@ CREATE TABLE `ok_products` (
   `votes` int(11) DEFAULT '0',
   `special` varchar(255) DEFAULT '',
   `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `main_category_id` int(11) DEFAULT NULL,
+  `main_image_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `url` (`url`),
   KEY `brand_id` (`brand_id`),
@@ -860,12 +862,14 @@ CREATE TABLE `ok_products` (
   KEY `position` (`position`),
   KEY `external_id` (`external_id`),
   KEY `hit` (`featured`),
-  KEY `name` (`name`(333))
+  KEY `name` (`name`(333)),
+  KEY `main_category_id` (`main_category_id`),
+  KEY `main_image_id` (`main_image_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TRIGGER `products_date_create` BEFORE INSERT ON `ok_products` FOR EACH ROW
-SET NEW.`created` = NOW();;
+SET NEW.`created` = NOW();
 
 
 DROP TABLE IF EXISTS `ok_products_categories`;
