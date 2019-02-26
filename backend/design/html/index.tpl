@@ -17,6 +17,9 @@
     <link href="design/css/media.css" rel="stylesheet" type="text/css" />
     <script src="design/js/jquery.dd.min.js"></script>
 
+    <link href="design/js//fancybox/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+    <script src="design/js/fancybox/jquery.fancybox.min.js"></script>
+
 
     {if in_array($smarty.get.module, array("OrdersAdmin", "PostAdmin", "ReportStatsAdmin", "CouponsAdmin", "CategoryStatsAdmin"))}
         <script src="design/js/jquery/datepicker/jquery.ui.datepicker-{$manager->lang}.js"></script>
@@ -64,35 +67,44 @@
         <div class="sidebar sidebar-menu">
             <div class="scrollbar-inner menu_items">
                 <div>
-                    <ul class="menu_items">
-                        {foreach $left_menu as $section=>$items}
-                            <li class="{if isset($items.$menu_selected)}open active{/if} {if $items|count > 1} fn_item_sub_switch nav-dropdown{/if}">
-                                <a class="nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?module={$items|reset}{/if}">
-                                    <span class="{$section} title">{$btr->get_translation({$section})}</span>
-                                    <span class="icon-thumbnail">
-                                       {include file='svg_icon.tpl' svgId=$section}
-                                    </span>
-                                    {if $items|count >1}
-                                        <span class="arrow"></span>
+                    <form class="fn_manager_menu">
+                        <input type="hidden" name="object" value="managers" />
+                        <input type="hidden" name="session_id" value="{$smarty.session.id}" />
+                        <input type="hidden" name="id" value="{$manager->id}" />
+                        <ul id="fn_sort_menu_section" class="menu_items">
+                            {foreach $left_menu as $section=>$items}
+                                <li class="{if isset($items.$menu_selected)}open active{/if} {if $items|count > 1} fn_item_sub_switch nav-dropdown{/if}">
+                                    {if $items|count == 1}
+                                        <input type="hidden" value="{$items|reset}" name="manager_menu[{$section|escape}][{$items|key}]" />
                                     {/if}
-                                </a>
-                                {if $items|count > 1}
-                                    <ul class="fn_submenu_toggle submenu">
-                                        {foreach $items as $title=>$mod}
-                                            <li class="{if $title == $menu_selected}active{/if}">
-                                                <a class="nav-link" href="index.php?module={$mod}">
-                                                    <span class="icon-thumbnail">
-                                                        {$btr->get_translation({$title})|first_letter}
-                                                    </span>
-                                                    <span class="{$title} title">{$btr->get_translation({$title})}</span>
-                                                </a>
-                                            </li>
-                                        {/foreach}
-                                    </ul>
-                                {/if}
-                            </li>
-                        {/foreach}
-                    </ul>
+                                    <a class="nav-link {if $items|count > 1}fn_item_switch nav-dropdown-toggle{/if}" href="{if $items|count > 1}javascript:;{else}index.php?module={$items|reset}{/if}">
+                                        <span class="{$section} title">{$btr->get_translation({$section})}</span>
+                                        <span class="icon-thumbnail">
+                                           {include file='svg_icon.tpl' svgId=$section}
+                                        </span>
+                                        {if $items|count >1}
+                                            <span class="arrow"></span>
+                                        {/if}
+                                    </a>
+                                    {if $items|count > 1}
+                                        <ul class="fn_submenu_toggle submenu fn_sort_menu_item">
+                                            {foreach $items as $title=>$mod}
+                                                <li class="{if $title == $menu_selected}active{/if}">
+                                                    <input type="hidden" name="manager_menu[{$section|escape}][{$title|escape}]" value="{$mod|escape}" />
+                                                    <a class="nav-link" href="index.php?module={$mod}">
+                                                        <span class="icon-thumbnail">
+                                                            {$btr->get_translation({$title})|first_letter}
+                                                        </span>
+                                                        <span class="{$title} title">{$btr->get_translation({$title})}</span>
+                                                    </a>
+                                                </li>
+                                            {/foreach}
+                                        </ul>
+                                    {/if}
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </form>
                 </div>
             </div>
         </div>
@@ -112,6 +124,9 @@
                             <span class="">{$btr->index_go_to_site|escape}</span>
                         </a>
                     </div>
+                </div>
+                <div class="admin_switches admin_switches_two hidden-sm-down">
+                    {include file="video_help.tpl"}
                 </div>
                 <div id="mobile_menu_right" class="fn_mobile_menu_right hidden-md-up  text_white float-xs-right">
                     {include file='svg_icon.tpl' svgId='mobile_menu2'}
@@ -134,7 +149,7 @@
                     {*Техподдержка*}
                     <div class="admin_techsupport">
                         <div class="techsupport_inner">
-                            <a {if $support_info->public_key} data-hint="{$support_info->balance|balance:false}"{else} data-hint="Not active" {/if}  class="hint-bottom-middle-t-info-s-small-mobile  hint-anim"  href="index.php?module=SupportAdmin">
+                            <a {if $support_info->public_key} data-hint="{$support_info->balance|balance}"{else} data-hint="Not active" {/if}  class="hint-bottom-middle-t-info-s-small-mobile  hint-anim"  href="index.php?module=SupportAdmin">
                                 <span class="quickview_hidden">{$btr->index_support|escape}</span>
                                 {include file='svg_icon.tpl' svgId='techsupport'}
                                 {if $support_info->public_key}
@@ -143,7 +158,7 @@
                             </a>
                             <div class="techsupport_toggle hidden-md-up">
                                 {if $support_info->public_key}
-                                    <span>{$support_info->balance|balance:false}</span>
+                                    <span>{$support_info->balance|balance}</span>
                                 {else}
                                     <span>Not active</span>
                                 {/if}
@@ -267,7 +282,14 @@
              </div>
             {*Быстрое сохранение*}
             <div class="fn_fast_save">
-                <button type="submit" class="btn btn_small btn_blue ">
+                <div class="fn_fast_action_block fn_action_block">
+                    <div class="action"></div>
+                    <div class="additional_params"></div>
+                </div>
+                <button type="submit" class="{strip}{if $smarty.get.module == 'TemplatesAdmin'
+                        ||  $smarty.get.module == 'StylesAdmin'
+                        ||  $smarty.get.module == 'ScriptsAdmin'}
+                            fn_save{else}fast_save_button{/if}{/strip} btn btn_small btn_blue">
                     {include file='svg_icon.tpl' svgId='checked'}
                     <span>{$btr->general_apply|escape}</span>
                 </button>
@@ -316,10 +338,39 @@
         }
 
         if($('form.fn_fast_button').size()>0){
+            {literal}
+            
+            // Связка селектов массовых действий
+            $(document).on('change', '.fn_action_block:not(.fn_fast_action_block) select', function(e, trigger) {
+                if (!trigger) {
+                    var name = $(this).attr('name'),
+                        selected = $(this).children(':selected').val();
+                    $('.fn_fast_save select[name="' + name + '"]').val(selected).trigger('change', {trigger: true});
+                }
+            });
+            
+            $(document).on('change', '.fn_fast_save select', function(e, trigger) {
+                if (!trigger) {
+                    var name = $(this).attr('name'),
+                        selected = $(this).children(':selected').val();
+                    $('form.fn_fast_button select[name="' + name + '"]').val(selected).trigger('change', {trigger: true});
+                }
+            });
+            {/literal}
+            
+            if ($('.fn_action_block').size()>0) {
+                var action_block = $('.okay_list_option').clone(true);
+                $('.fn_fast_action_block .action').html(action_block);
+                if ($('.fn_additional_params').size()) {
+                    var additional_params = $('.fn_additional_params').clone(true);
+                    $('.fn_fast_action_block .additional_params').html(additional_params);
+                }
+            }
+            
             $('input,textarea,select, .dropdown-toggle, .fn_sort_item, .fn_category_item').bind('keyup change dragover click',function(){
                $('.fn_fast_save').show();
             });
-            $('.fn_fast_save').on('click', function () {
+            $('.fn_fast_save .fast_save_button').on('click', function () {
                 $('body').find("form.fn_fast_button").trigger('submit');
             });
         }
@@ -392,8 +443,6 @@
             });
         }
 
-
-
         /* Delete images for products */
         if($('.images_list').size()>0){
             $('.fn_delete').on('click',function(){
@@ -411,7 +460,43 @@
             });
         }
 
+        {literal}
+        Sortable.create(document.getElementById("fn_sort_menu_section"), {
+            sort: true,  // sorting inside list
+            animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
+            scrollSensitivity: 100, // px, how near the mouse must be to an edge to start scrolling.
+            scrollSpeed: 10, // px
+            // Changed sorting within list
+            onUpdate: function (evt) {
+                save_menu();
+            }
+        });
 
+        if($(".fn_sort_menu_item").size()>0) {
+            $(".fn_sort_menu_item").each(function() {
+                Sortable.create(this, {
+                    sort: true,  // sorting inside list
+                    animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation.
+                    scroll: true,
+                    scrollSensitivity: 100, // px, how near the mouse must be to an edge to start scrolling.
+                    scrollSpeed: 10, // px
+                    // Changed sorting within list
+                    onUpdate: function (evt) {
+                        save_menu();
+                    }
+                });
+            });
+        }
+
+        function save_menu() {
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "ajax/update_object.php",
+                data: $('.fn_manager_menu').serialize()
+            });
+        }
+        {/literal}
 
         /* Initializing sorting */
         if($(".sortable").size()>0) {
@@ -425,8 +510,9 @@
                     ghostClass: "sortable-ghost",  // Class name for the drop placeholder
                     chosenClass: "sortable-chosen",  // Class name for the chosen item
                     dragClass: "sortable-drag",  // Class name for the dragging item
-                    scrollSensitivity: 30, // px, how near the mouse must be to an edge to start scrolling.
+                    scrollSensitivity: 100, // px, how near the mouse must be to an edge to start scrolling.
                     scrollSpeed: 10, // px
+                    
                     // Changed sorting within list
                     onUpdate: function (evt) {
                         if ($(".product_images_list").size() > 0) {
@@ -442,6 +528,68 @@
             {/literal}
         }
 
+        if($(".sort_extended").size()>0) {
+            
+            /*Явно указываем высоту списка, иначе когда скрипт удаляет элемент и ставит на его место заглушку, страница подпрыгивает*/
+            $(".fn_sort_list").css('height', $(".fn_sort_list").outerHeight());
+            
+            $(".sort_extended").sortable({
+                items: ".fn_sort_item",
+                tolerance: "pointer",
+                handle: ".move_zone",
+                scrollSensitivity: 50,
+                scrollSpeed: 100,
+                scroll: true,
+                opacity: 0.5,
+                containment: "document",
+                helper: function(event, ui){
+                    if ($('input[type="checkbox"][name*="check"]:checked').size()<1) return ui;
+                    var helper = $('<div/>');
+                    $('input[type="checkbox"][name*="check"]:checked').each(function() {
+                        var item = $(this).closest('.fn_row');
+                        helper.height(helper.height()+item.innerHeight());
+                        if (item[0]!=ui[0]) {
+                            helper.append(item.clone());
+                            $(this).closest('.fn_row').remove();
+                        } else {
+                            helper.append(ui.clone());
+                            item.find('input[type="checkbox"][name*="check"]').attr('checked', false);
+                        }
+                    });
+                    return helper;
+                },
+                start: function(event, ui) {
+                    if(ui.helper.children('.fn_row').size()>0)
+                        $('.ui-sortable-placeholder').height(ui.helper.height());
+                },
+                beforeStop:function(event, ui){
+                    if(ui.helper.children('.fn_row').size()>0){
+                        ui.helper.children('.fn_row').each(function(){
+                            $(this).insertBefore(ui.item);
+                        });
+                        ui.item.remove();
+                    }
+                },
+                update: function (event, ui) {
+                    $("#list_form input[name*='check']").attr('checked', false);
+
+                }
+            });
+        }
+        
+        $(".fn_pagination a.droppable").droppable({
+            activeClass: "drop_active",
+            hoverClass: "drop_hover",
+            tolerance: "pointer",
+            drop: function(event, ui){
+                $(ui.helper).find('input[type="checkbox"][name*="check"]').attr('checked', true);
+                $(ui.draggable).closest("form").find('select[name="action"] option[value=move_to_page]').attr("selected", "selected");
+                $(ui.draggable).closest("form").find('select[name=target_page] option[value='+$(this).html()+']').attr("selected", "selected");
+                $(ui.draggable).closest("form").submit();
+                return false;
+            }
+        });
+        
         /* Call an ajax entity update */
         if($(".fn_ajax_action").size()>0){
             $(document).on("click",".fn_ajax_action",function () {

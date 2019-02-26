@@ -22,6 +22,7 @@ class TranslationAdmin extends Okay {
             $translation->id    = $this->request->post('id');
             $translation->label = trim($this->request->post('label'));
             $translation->label = str_replace(" ", '_', $translation->label);
+            $translation->label = preg_replace("/[^a-z0-9\-_]/i", "", $translation->label);
             
             if($languages){
                 foreach($languages as $lang) {
@@ -30,7 +31,7 @@ class TranslationAdmin extends Okay {
                     $translation->values[$lang->id] = $translation->$field;
                 }
             }
-            $exist = $this->translations->get_translation($translation->label);
+            $exist = $this->translations->get_translation($translation->label, true);
             
             $okay_object = $this->{$translation->label};
             if(!$translation->label) {
@@ -50,9 +51,10 @@ class TranslationAdmin extends Okay {
             }
         } else {
             $translation->id = $this->request->get('id');
-            if(!empty($translation->id)) {
-                $translation = $this->translations->get_translation($translation->id);
-            }
+        }
+
+        if(!empty($translation->id)) {
+            $translation = $this->translations->get_translation($translation->id);
         }
         
         $this->design->assign('languages', $languages);

@@ -14,11 +14,15 @@ class View extends Okay {
     public $lang_link;
     public $js_version;
     public $css_version;
+    public $current_url;
 
     /* Класс View похож на синглтон, храним статически его инстанс */
     private static $view_instance;
     
     public function __construct() {
+
+
+
         // После переключения на язык по умолчанию, если не вызвать set_lang_id() до создания экземпляра класса settings,
         // то мультиязычные настройки первый раз приходят на предыдущем языке.
         if (empty($_GET['lang_label']) && empty($_GET['lang_id'])) {
@@ -33,6 +37,12 @@ class View extends Okay {
             }
         }
         parent::__construct();
+
+        if ($prg_seo_hide = $this->request->post("prg_seo_hide")) {
+            header("Location: ".$prg_seo_hide);
+            exit;
+        }
+
         if (!defined('IS_CLIENT')) {
             define('IS_CLIENT', true);
         }
@@ -48,6 +58,7 @@ class View extends Okay {
             $this->lang_link    = &self::$view_instance->lang_link;
             $this->js_version   = &self::$view_instance->js_version;
             $this->css_version  = &self::$view_instance->css_version;
+            $this->current_url  = &self::$view_instance->current_url;
         } else {
             // Сохраняем свой инстанс в статической переменной,
             // чтобы в следующий раз использовать его
@@ -115,6 +126,8 @@ class View extends Okay {
                     } else {
                         $l->url = ($ruri ? implode('/',array_slice($ruri, $as)) : '');
                     }
+
+                    $l->url = $this->config->root_url.'/'.$l->url;
                 }
 
                 if(!$this->language->enabled && $this->language->id != $first_lang->id) {
@@ -164,24 +177,29 @@ class View extends Okay {
                 $strlen = $first_lang->id == $this->language->id ? "" : $first_lang->label;
                 $page_url = trim(substr($page_url, strlen($strlen)),"/");
             }
+            
+            // Сохраним урл, он может понадобиться в других view
+            $this->current_url = $page_url;
+            
             if (in_array($_GET['page_url'], array('all-products', 'discounted', 'bestsellers'))) {
                 $page_url = $_GET['page_url'];
             }
             $this->design->assign('language', $this->language);
             $this->design->assign('languages', $languages);
+            $this->translations->debug = (bool)$this->config->debug_translation;
             $this->design->assign('lang', $this->translations->get_translations(array('lang'=>$this->language->label)));
 
             $this->page = $this->pages->get_page((string)$page_url);
             $this->design->assign('page', $this->page);
             
             // Передаем в дизайн то, что может понадобиться в нем
-            $this->design->assign('currencies',    $this->currencies);
-            $this->design->assign('currency',    $this->currency);
+            $this->design->assign('currencies', $this->currencies);
+            $this->design->assign('currency',   $this->currency);
             $this->design->assign('user',       $this->user);
             $this->design->assign('group',      $this->group);
             
-            $this->design->assign('config',        $this->config);
-            $this->design->assign('settings',    $this->settings);
+            $this->design->assign('config',     $this->config);
+            $this->design->assign('settings',   $this->settings);
             
             // Настраиваем плагины для смарти
             /*Распаковка переменной под админом*/

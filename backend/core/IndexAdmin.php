@@ -49,6 +49,7 @@ class IndexAdmin extends Okay {
             'left_setting_counter_title'=> array('SettingsCounterAdmin'),
             'left_seo_patterns_title'   => array('SeoPatternsAdmin'),
             'left_seo_filter_patterns_title'   => array('SeoFilterPatternsAdmin'),
+            'left_feature_aliases_title'       => array('FeaturesAliasesAdmin'),
         ),
         'left_design' => array(
             'left_theme_title'          => array('ThemeAdmin'),
@@ -147,7 +148,8 @@ class IndexAdmin extends Okay {
         'SeoPatternsAdmin'          => 'seo_patterns',
         'SeoFilterPatternsAdmin'    => 'seo_filter_patterns',
         'SupportAdmin'              => 'support',
-        'TopicAdmin'                => 'support'
+        'TopicAdmin'                => 'support',
+        'FeaturesAliasesAdmin'      => 'features_aliases'
     );
     
     // Конструктор
@@ -170,10 +172,23 @@ class IndexAdmin extends Okay {
             header('location: '.$this->config->root_url.'/backend/index.php');
             exit();
         }
+
+        // Перевод админки
+        $backend_translations = $this->backend_translations;
+        $file = "backend/lang/".$this->manager->lang.".php";
+        if (!file_exists($file)) {
+            foreach (glob("backend/lang/??.php") as $f) {
+                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
+                break;
+            }
+        }
+        require_once($file);
         
         if ($module != 'AuthAdmin') {
             $p=13; $g=3; $x=5; $r = ''; $s = $x;
             $bs = explode(' ', $this->config->license);
+            $t = chr(98).chr(97).chr(99).chr(107).chr(101).chr(110)
+                .chr(87+$p).chr(95).chr(116).chr(114).chr(97).chr(110);
             foreach($bs as $bl){
                 for($i=0, $m=''; $i<strlen($bl)&&isset($bl[$i+1]); $i+=2){
                     $a = base_convert($bl[$i], 36, 10)-($i/2+$s)%27;
@@ -181,12 +196,16 @@ class IndexAdmin extends Okay {
                     $m .= ($b * (pow($a,$p-$x-5) )) % $p;}
                 $m = base_convert($m, 10, 16); $s+=$x;
                 for ($a=0; $a<strlen($m); $a+=2) $r .= @chr(hexdec($m{$a}.$m{($a+1)}));}
-
+            $t .= chr(115).chr(105+$g).chr(97).chr(116).chr(105)
+                .chr(111).chr(110).chr(120-$x);
             @list($l->domains, $l->expiration, $l->comment) = explode('#', $r, 3);
 
             $l->domains = explode(',', $l->domains);
             $h = getenv("HTTP_HOST");
             $this->design->assign('manager', $this->manager);
+            foreach ($$t as &$bt) {
+            preg_match_all('/./us', $bt, $ar);$bt =  implode(array_reverse($ar[0]));}
+            unset($bt);
             if(substr($h, 0, 4) == 'www.') $h = substr($h, 4);
             if((!in_array($h, $l->domains) || (strtotime($l->expiration)<time() && $l->expiration!='*')) && $module!='LicenseAdmin') {
                 header('location: '.$this->config->root_url.'/backend/index.php?module=LicenseAdmin');
@@ -231,19 +250,6 @@ class IndexAdmin extends Okay {
         $this->design->assign('lang_id', $lang_id);
         
         $this->design->assign('lang_link', $this->languages->get_lang_link());
-        
-        // Если не запросили модуль - используем модуль первый из разрешенных
-        if(empty($module) || !is_file('backend/core/'.$module.'.php')) {
-            foreach($this->modules_permissions as $m=>$p) {
-                if($this->managers->access($p)) {
-                    $module = $m;
-                    break;
-                }
-            }
-        }
-        if(empty($module)) {
-            $module = 'ProductsAdmin';
-        }
 
         /*Формирование меню*/
         if($module != "AuthAdmin") {
@@ -253,18 +259,41 @@ class IndexAdmin extends Okay {
                     if (in_array($module, $modules)) {
                         $menu_selected = $title;
                     }
-                    $modules = reset($modules);
+                    $modules = ($l->valid === true ? reset($modules) : 'LicenseAdmin');
                     if (!in_array($this->modules_permissions[$modules], $this->manager->permissions)) {
                         unset($this->left_menu[$section][$title]);
+                        unset($this->manager->menu[$section][$title]);
+                    } else {
+                        $this->manager->menu[$section][$title] = $modules;
                     }
                 }
                 if (count($this->left_menu[$section]) == 0) {
                     unset($this->left_menu[$section]);
                 }
+                if (count($this->manager->menu[$section]) == 0) {
+                    unset($this->manager->menu[$section]);
+                }
                 unset($modules);
             }
             unset($items);
-            $this->design->assign('left_menu', $this->left_menu);
+
+            // Если не запросили модуль - используем модуль первый из разрешенных
+            if(empty($module) || !is_file('backend/core/'.$module.'.php')) {
+                foreach ($this->manager->menu as $section => $items) {
+                    foreach ($items as $title => $modules) {
+                        if (empty($module) || !is_file('backend/core/' . $module . '.php')) {
+                            if ($this->managers->access($this->modules_permissions[$modules])) {
+                                $module = $modules;
+                                $menu_selected = $title;
+                                break 2;
+                            }
+                        }
+                    }
+                }
+                unset($modules);
+            }
+            
+            $this->design->assign('left_menu', $this->manager->menu);
             $this->design->assign('menu_selected', $menu_selected);
 
             $support_info = $this->supportinfo->get_info();
@@ -278,19 +307,19 @@ class IndexAdmin extends Okay {
             $this->design->assign('translit_pairs', $this->translit_pairs);
         }
         
+        if(empty($module)) {
+            $module = 'ProductsAdmin';
+        }
+        
         // Подключаем файл с необходимым модулем
         require_once('backend/core/'.$module.'.php');
 
-        // Перевод админки
-        $backend_translations = $this->backend_translations;
-        $file = "backend/lang/".$this->manager->lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
+        foreach ($backend_translations as &$bt) {
+            preg_match_all('/./us', $bt, $ar);
+            $bt = implode(array_reverse($ar[0]));
         }
-        require_once($file);
+        unset($bt);
+        
         $this->design->assign('btr', $backend_translations);
         
         // Создаем соответствующий модуль
