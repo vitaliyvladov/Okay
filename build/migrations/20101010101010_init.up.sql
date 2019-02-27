@@ -78,9 +78,9 @@ CREATE TABLE `ok_brands` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text NOT NULL,
-  `description` text NOT NULL,
-  `image` varchar(255) NOT NULL,
+  `annotation` text,
+  `description` text,
+  `image` varchar(255) DEFAULT NULL,
   `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `position` int(11) NOT NULL DEFAULT '0',
   `visible` tinyint(1) NOT NULL DEFAULT '0',
@@ -114,8 +114,8 @@ CREATE TABLE `ok_categories` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text NOT NULL,
-  `description` text NOT NULL,
+  `annotation` text,
+  `description` text,
   `url` varchar(255) NOT NULL DEFAULT '',
   `image` varchar(255) NOT NULL DEFAULT '',
   `position` int(11) NOT NULL DEFAULT '0',
@@ -125,7 +125,7 @@ CREATE TABLE `ok_categories` (
   `auto_meta_title` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_desc` varchar(512) NOT NULL DEFAULT '',
-  `auto_description` text NOT NULL,
+  `auto_description` text,
   `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -136,10 +136,6 @@ CREATE TABLE `ok_categories` (
   KEY `external_id` (`external_id`),
   KEY `created` (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TRIGGER `categories_date_create` BEFORE INSERT ON `ok_categories` FOR EACH ROW
-SET NEW.`created` = NOW();
 
 
 DROP TABLE IF EXISTS `ok_categories_features`;
@@ -241,6 +237,7 @@ CREATE TABLE `ok_features` (
   `url` varchar(255) NOT NULL DEFAULT '',
   `external_id` varchar(36) NOT NULL DEFAULT '',
   `url_in_product` tinyint(1) DEFAULT '0',
+  `to_index_new_value` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `position` (`position`),
   KEY `in_filter` (`in_filter`),
@@ -270,6 +267,22 @@ CREATE TABLE `ok_features_aliases_values` (
   KEY `feature_id` (`feature_id`),
   KEY `feature_alias_id` (`feature_alias_id`),
   KEY `value` (`value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `ok_features_values`;
+CREATE TABLE `ok_features_values` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_id` int(11) NOT NULL,
+  `value` varchar(1024) NOT NULL DEFAULT '',
+  `translit` varchar(255) NOT NULL DEFAULT '',
+  `position` int(11) NOT NULL DEFAULT '0',
+  `to_index` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `feature_id_translit` (`feature_id`,`translit`),
+  KEY `feature_id` (`feature_id`),
+  KEY `position` (`position`),
+  KEY `value` (`value`(64))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -389,8 +402,8 @@ CREATE TABLE `ok_lang_brands` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text NOT NULL,
-  `description` text NOT NULL,
+  `annotation` text,
+  `description` text,
   UNIQUE KEY `lang_id` (`lang_id`,`brand_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -404,12 +417,12 @@ CREATE TABLE `ok_lang_categories` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text NOT NULL,
-  `description` text NOT NULL,
+  `annotation` text,
+  `description` text,
   `auto_meta_title` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_desc` varchar(512) NOT NULL DEFAULT '',
-  `auto_description` text NOT NULL,
+  `auto_description` text,
   UNIQUE KEY `lang_id` (`lang_id`,`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -471,6 +484,21 @@ CREATE TABLE `ok_lang_features_aliases_values` (
   `feature_alias_value_id` int(11) NOT NULL,
   `value` varchar(255) NOT NULL DEFAULT '',
   UNIQUE KEY `lang_id_feature_alias_value_id` (`lang_id`,`feature_alias_value_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `ok_lang_features_values`;
+CREATE TABLE `ok_lang_features_values` (
+  `lang_id` int(11) NOT NULL,
+  `feature_value_id` int(11) NOT NULL,
+  `feature_id` int(11) NOT NULL,
+  `value` varchar(1024) NOT NULL,
+  `translit` varchar(255) NOT NULL,
+  KEY `translit_feature_id_lang_id` (`translit`,`feature_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`),
+  KEY `feature_value_id` (`feature_value_id`),
+  KEY `translit` (`translit`),
+  KEY `value` (`value`(64))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -645,6 +673,7 @@ CREATE TABLE `ok_managers` (
   `last_try` date DEFAULT NULL,
   `comment` varchar(512) DEFAULT '',
   `menu_status` tinyint(1) NOT NULL DEFAULT '1',
+  `menu` text,
   PRIMARY KEY (`id`),
   KEY `login` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -868,10 +897,6 @@ CREATE TABLE `ok_products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TRIGGER `products_date_create` BEFORE INSERT ON `ok_products` FOR EACH ROW
-SET NEW.`created` = NOW();
-
-
 DROP TABLE IF EXISTS `ok_products_categories`;
 CREATE TABLE `ok_products_categories` (
   `product_id` int(11) NOT NULL,
@@ -881,6 +906,16 @@ CREATE TABLE `ok_products_categories` (
   KEY `position` (`position`),
   KEY `product_id` (`product_id`),
   KEY `category_id` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `ok_products_features_values`;
+CREATE TABLE `ok_products_features_values` (
+  `product_id` int(11) NOT NULL,
+  `value_id` int(11) NOT NULL,
+  UNIQUE KEY `product_id_value_id` (`product_id`,`value_id`),
+  KEY `product_id` (`product_id`),
+  KEY `value_id` (`value_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -945,7 +980,7 @@ CREATE TABLE `ok_seo_filter_patterns` (
 DROP TABLE IF EXISTS `ok_settings`;
 CREATE TABLE `ok_settings` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `param` varchar(255) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   PRIMARY KEY (`setting_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -979,11 +1014,11 @@ INSERT INTO `ok_settings` (`setting_id`, `name`, `value`) VALUES
 
 DROP TABLE IF EXISTS `ok_settings_lang`;
 CREATE TABLE `ok_settings_lang` (
-  `name` varchar(128) NOT NULL,
+  `param` varchar(128) NOT NULL,
   `lang_id` int(11) NOT NULL DEFAULT '0',
   `value` text NOT NULL,
-  PRIMARY KEY (`lang_id`,`name`),
-  KEY `name` (`name`),
+  PRIMARY KEY (`lang_id`,`param`),
+  KEY `name` (`param`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

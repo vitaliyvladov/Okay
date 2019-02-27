@@ -5,16 +5,20 @@ license = ksfdhdw9xg xyhnfgxwuf ohipiouqtu wvqzyuuyqi y3x91nvdfq 8kamt8cz odgove
 [database]
 
 ;Сервер базы данных
-db_server = "localhost"
+db_server = "mysql"
 
 ;Пользователь базы данных
 db_user = "root"
 
 ;Пароль к базе
-db_password = ""
+db_password = "root"
 
 ;Имя базы
-db_name = "okay_develop"
+db_name = "temp"
 
 [php]
-path_to_php =
+path_to_php = ""
+
+[bitbucket]
+
+bitbucket_key = "sss"

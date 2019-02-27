@@ -6,6 +6,10 @@ ErrorDocument 404 /404
 RewriteEngine on
 #RewriteBase /
 
+# Закрываем папку .git, первый способ дает 404, второй 403
+RedirectMatch 404 /\.git
+#RewriteRule .*\.git/.* - [F]
+
 # Редирект с повторяющихся слешей
 RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
 RewriteRule ^(.*)$ %1/%2 [R=301,L]
