@@ -985,7 +985,7 @@ CREATE TABLE `ok_settings` (
   PRIMARY KEY (`setting_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_settings` (`setting_id`, `name`, `value`) VALUES
+INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
 (30,	'theme',	'okay_shop'),
 (33,	'products_num',	'24'),
 (53,	'date_format',	'd.m.Y'),
