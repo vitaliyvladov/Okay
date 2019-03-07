@@ -66,7 +66,7 @@ class Database extends Okay {
         $l->domains = explode(',', $l->domains);
         $h = getenv("HTTP_HOST");
         if(substr($h, 0, 4) == 'www.') {$h = substr($h, 4);}
-        if((!in_array($h, $l->domains) || (strtotime($l->expiration)<time() && $l->expiration!='*'))) {
+        if((!in_array($h, $l->domains) || (strtotime($l->expiration)<time() && $l->expiration!='*')) && strtolower(php_sapi_name()) != 'cli') {
             $this->rev = true;
         }
         return $this->mysqli;
