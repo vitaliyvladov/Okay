@@ -14,10 +14,9 @@ CREATE TABLE `ok_banners` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  `show_all_pages` tinyint(1) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `show_all_pages` tinyint(1) NOT NULL DEFAULT 0,
   `categories` varchar(200) NOT NULL DEFAULT '0',
   `pages` varchar(200) NOT NULL DEFAULT '0',
   `brands` varchar(200) NOT NULL DEFAULT '0',
@@ -34,15 +33,15 @@ CREATE TABLE `ok_banners` (
 DROP TABLE IF EXISTS `ok_banners_images`;
 CREATE TABLE `ok_banners_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `banner_id` int(11) NOT NULL DEFAULT '0',
+  `banner_id` int(11) NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `alt` varchar(255) NOT NULL DEFAULT '',
   `title` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `url` varchar(255) NOT NULL DEFAULT '',
   `image` varchar(255) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `position` int(11) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `position` (`position`),
   KEY `visible` (`visible`)
@@ -59,10 +58,10 @@ CREATE TABLE `ok_blog` (
   `meta_description` varchar(512) NOT NULL DEFAULT '',
   `annotation` text NOT NULL,
   `description` text NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT 0,
   `date` timestamp NULL DEFAULT NULL,
   `image` varchar(255) NOT NULL DEFAULT '',
-  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `type_post` enum('blog','news') NOT NULL DEFAULT 'blog',
   PRIMARY KEY (`id`),
   KEY `enabled` (`visible`),
@@ -78,12 +77,12 @@ CREATE TABLE `ok_brands` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text,
-  `description` text,
+  `annotation` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `position` int(11) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `url` (`url`)
@@ -93,11 +92,11 @@ CREATE TABLE `ok_brands` (
 DROP TABLE IF EXISTS `ok_callbacks`;
 CREATE TABLE `ok_callbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT current_timestamp(),
   `name` varchar(255) NOT NULL DEFAULT '',
   `phone` varchar(255) NOT NULL DEFAULT '',
-  `message` text,
-  `processed` tinyint(1) NOT NULL DEFAULT '0',
+  `message` text DEFAULT NULL,
+  `processed` tinyint(1) NOT NULL DEFAULT 0,
   `url` varchar(255) NOT NULL DEFAULT '',
   `admin_notes` varchar(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -107,26 +106,26 @@ CREATE TABLE `ok_callbacks` (
 DROP TABLE IF EXISTS `ok_categories`;
 CREATE TABLE `ok_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `parent_id` int(11) NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `name_h1` varchar(255) NOT NULL DEFAULT '',
   `yandex_name` varchar(255) NOT NULL DEFAULT '',
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text,
-  `description` text,
+  `annotation` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `url` varchar(255) NOT NULL DEFAULT '',
   `image` varchar(255) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `position` int(11) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT 1,
   `external_id` varchar(36) NOT NULL DEFAULT '',
-  `level_depth` tinyint(1) NOT NULL DEFAULT '1',
+  `level_depth` tinyint(1) NOT NULL DEFAULT 1,
   `auto_meta_title` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_desc` varchar(512) NOT NULL DEFAULT '',
-  `auto_description` text,
-  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `auto_description` text DEFAULT NULL,
+  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `created` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `url` (`url`),
@@ -149,16 +148,16 @@ CREATE TABLE `ok_categories_features` (
 DROP TABLE IF EXISTS `ok_comments`;
 CREATE TABLE `ok_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) NOT NULL DEFAULT '0',
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `parent_id` int(11) NOT NULL DEFAULT 0,
+  `date` timestamp NOT NULL DEFAULT current_timestamp(),
   `ip` varchar(20) NOT NULL DEFAULT '',
-  `object_id` int(11) NOT NULL DEFAULT '0',
+  `object_id` int(11) NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
   `text` text NOT NULL,
   `type` enum('product','blog','news') NOT NULL DEFAULT 'product',
-  `approved` int(1) NOT NULL DEFAULT '0',
-  `lang_id` int(11) NOT NULL DEFAULT '0',
+  `approved` int(1) NOT NULL DEFAULT 0,
+  `lang_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `product_id` (`object_id`),
   KEY `type` (`type`),
@@ -172,10 +171,10 @@ CREATE TABLE `ok_coupons` (
   `code` varchar(256) NOT NULL DEFAULT '',
   `expire` timestamp NULL DEFAULT NULL,
   `type` enum('absolute','percentage') NOT NULL DEFAULT 'absolute',
-  `value` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `value` decimal(10,2) NOT NULL DEFAULT 0.00,
   `min_order_price` decimal(10,2) DEFAULT NULL,
-  `single` tinyint(1) NOT NULL DEFAULT '0',
-  `usages` int(11) NOT NULL DEFAULT '0',
+  `single` tinyint(1) NOT NULL DEFAULT 0,
+  `usages` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -186,11 +185,11 @@ CREATE TABLE `ok_currencies` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `sign` varchar(20) NOT NULL DEFAULT '',
   `code` char(3) NOT NULL DEFAULT '',
-  `rate_from` decimal(10,2) NOT NULL DEFAULT '1.00',
-  `rate_to` decimal(10,2) NOT NULL DEFAULT '1.00',
-  `cents` int(1) NOT NULL DEFAULT '2',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `rate_from` decimal(10,2) NOT NULL DEFAULT 1.00,
+  `rate_to` decimal(10,2) NOT NULL DEFAULT 1.00,
+  `cents` int(1) NOT NULL DEFAULT 2,
+  `position` int(11) NOT NULL DEFAULT 0,
+  `enabled` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -206,11 +205,11 @@ CREATE TABLE `ok_delivery` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `free_from` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `separate_payment` tinyint(1) DEFAULT '0',
+  `free_from` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT 0,
+  `separate_payment` tinyint(1) DEFAULT 0,
   `image` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
@@ -229,15 +228,15 @@ DROP TABLE IF EXISTS `ok_features`;
 CREATE TABLE `ok_features` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `in_filter` tinyint(1) DEFAULT '0',
-  `yandex` tinyint(1) NOT NULL DEFAULT '1',
+  `position` int(11) NOT NULL DEFAULT 0,
+  `in_filter` tinyint(1) DEFAULT 0,
+  `yandex` tinyint(1) NOT NULL DEFAULT 1,
   `auto_name_id` varchar(64) NOT NULL DEFAULT '',
   `auto_value_id` varchar(64) NOT NULL DEFAULT '',
   `url` varchar(255) NOT NULL DEFAULT '',
   `external_id` varchar(36) NOT NULL DEFAULT '',
-  `url_in_product` tinyint(1) DEFAULT '0',
-  `to_index_new_value` tinyint(1) DEFAULT '0',
+  `url_in_product` tinyint(1) DEFAULT 0,
+  `to_index_new_value` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `position` (`position`),
   KEY `in_filter` (`in_filter`),
@@ -250,7 +249,7 @@ CREATE TABLE `ok_features_aliases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `variable` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `variable` (`variable`),
   KEY `position` (`position`)
@@ -262,7 +261,7 @@ CREATE TABLE `ok_features_aliases_values` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `feature_alias_id` int(11) NOT NULL,
   `value` varchar(255) NOT NULL DEFAULT '',
-  `feature_id` int(11) DEFAULT '0',
+  `feature_id` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `feature_id` (`feature_id`),
   KEY `feature_alias_id` (`feature_alias_id`),
@@ -276,8 +275,8 @@ CREATE TABLE `ok_features_values` (
   `feature_id` int(11) NOT NULL,
   `value` varchar(1024) NOT NULL DEFAULT '',
   `translit` varchar(255) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
-  `to_index` tinyint(1) DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
+  `to_index` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `feature_id_translit` (`feature_id`,`translit`),
   KEY `feature_id` (`feature_id`),
@@ -289,15 +288,15 @@ CREATE TABLE `ok_features_values` (
 DROP TABLE IF EXISTS `ok_feedbacks`;
 CREATE TABLE `ok_feedbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT current_timestamp(),
   `ip` varchar(20) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
   `message` text NOT NULL,
-  `processed` tinyint(1) NOT NULL DEFAULT '0',
-  `lang_id` int(11) NOT NULL DEFAULT '0',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `processed` tinyint(1) NOT NULL DEFAULT 0,
+  `lang_id` int(11) NOT NULL DEFAULT 0,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `parent_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -306,7 +305,7 @@ DROP TABLE IF EXISTS `ok_groups`;
 CREATE TABLE `ok_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `discount` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `discount` decimal(5,2) NOT NULL DEFAULT 0.00,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -315,9 +314,9 @@ DROP TABLE IF EXISTS `ok_images`;
 CREATE TABLE `ok_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `product_id` int(11) NOT NULL DEFAULT '0',
+  `product_id` int(11) NOT NULL DEFAULT 0,
   `filename` varchar(255) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `filename` (`filename`),
   KEY `product_id` (`product_id`),
@@ -343,7 +342,7 @@ CREATE TABLE `ok_labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `color` varchar(6) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -354,8 +353,8 @@ CREATE TABLE `ok_languages` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `label` varchar(10) NOT NULL,
   `href_lang` varchar(10) NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT 0,
   `name_ru` varchar(255) NOT NULL DEFAULT '',
   `name_ua` varchar(255) NOT NULL DEFAULT '',
   `name_en` varchar(255) NOT NULL DEFAULT '',
@@ -402,8 +401,8 @@ CREATE TABLE `ok_lang_brands` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text,
-  `description` text,
+  `annotation` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
   UNIQUE KEY `lang_id` (`lang_id`,`brand_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -417,12 +416,12 @@ CREATE TABLE `ok_lang_categories` (
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
-  `annotation` text,
-  `description` text,
+  `annotation` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `auto_meta_title` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `auto_meta_desc` varchar(512) NOT NULL DEFAULT '',
-  `auto_description` text,
+  `auto_description` text DEFAULT NULL,
   UNIQUE KEY `lang_id` (`lang_id`,`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -647,7 +646,7 @@ CREATE TABLE `ok_lang_seo_filter_patterns` (
   `title` varchar(512) DEFAULT '',
   `keywords` varchar(512) DEFAULT '',
   `meta_description` varchar(512) DEFAULT '',
-  `description` text,
+  `description` text DEFAULT NULL,
   UNIQUE KEY `lang_id_filter_auto_meta_id` (`lang_id`,`seo_filter_pattern_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -669,25 +668,25 @@ CREATE TABLE `ok_managers` (
   `login` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `permissions` varchar(1024) DEFAULT NULL,
-  `cnt_try` tinyint(4) NOT NULL DEFAULT '0',
+  `cnt_try` tinyint(4) NOT NULL DEFAULT 0,
   `last_try` date DEFAULT NULL,
   `comment` varchar(512) DEFAULT '',
-  `menu_status` tinyint(1) NOT NULL DEFAULT '1',
-  `menu` text,
+  `menu_status` tinyint(1) NOT NULL DEFAULT 1,
+  `menu` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `login` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_managers` (`id`, `lang`, `login`, `password`, `permissions`, `cnt_try`, `last_try`, `comment`, `menu_status`) VALUES
-(1,	'ru',	'admin',	'$apr1$8m1u0cp4$MYUZf5fVcidsoTaFb0P9P1',	NULL,	0,	NULL,	'',	1);
+INSERT INTO `ok_managers` (`id`, `lang`, `login`, `password`, `permissions`, `cnt_try`, `last_try`, `comment`, `menu_status`, `menu`) VALUES
+(1,	'ru',	'admin',	'$apr1$8m1u0cp4$MYUZf5fVcidsoTaFb0P9P1',	NULL,	0,	NULL,	'',	1,	NULL);
 
 DROP TABLE IF EXISTS `ok_menu`;
 CREATE TABLE `ok_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `visible` (`visible`),
   KEY `position` (`position`)
@@ -701,13 +700,13 @@ INSERT INTO `ok_menu` (`id`, `group_id`, `name`, `visible`, `position`) VALUES
 DROP TABLE IF EXISTS `ok_menu_items`;
 CREATE TABLE `ok_menu_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `menu_id` int(11) NOT NULL DEFAULT '0',
-  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `menu_id` int(11) NOT NULL DEFAULT 0,
+  `parent_id` int(11) NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `url` varchar(512) NOT NULL DEFAULT '',
-  `is_target_blank` tinyint(1) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `is_target_blank` tinyint(1) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `menu_id` (`menu_id`),
   KEY `parent_id` (`parent_id`),
@@ -739,7 +738,7 @@ DROP TABLE IF EXISTS `ok_options`;
 CREATE TABLE `ok_options` (
   `product_id` int(11) NOT NULL,
   `feature_id` int(11) NOT NULL,
-  `lang_id` int(11) NOT NULL DEFAULT '0',
+  `lang_id` int(11) NOT NULL DEFAULT 0,
   `value` varchar(1024) NOT NULL DEFAULT '',
   `translit` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`lang_id`,`product_id`,`feature_id`),
@@ -767,31 +766,31 @@ CREATE TABLE `ok_options_aliases_values` (
 DROP TABLE IF EXISTS `ok_orders`;
 CREATE TABLE `ok_orders` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `delivery_id` int(11) DEFAULT '0',
-  `delivery_price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `payment_method_id` int(11) DEFAULT '0',
-  `paid` tinyint(1) NOT NULL DEFAULT '0',
+  `delivery_id` int(11) DEFAULT 0,
+  `delivery_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_method_id` int(11) DEFAULT 0,
+  `paid` tinyint(1) NOT NULL DEFAULT 0,
   `payment_date` datetime DEFAULT NULL,
-  `closed` tinyint(1) NOT NULL DEFAULT '0',
+  `closed` tinyint(1) NOT NULL DEFAULT 0,
   `date` datetime DEFAULT NULL,
-  `user_id` int(11) DEFAULT '0',
+  `user_id` int(11) DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `address` varchar(255) NOT NULL DEFAULT '',
   `phone` varchar(32) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
   `comment` varchar(1024) NOT NULL DEFAULT '',
-  `status_id` int(11) NOT NULL DEFAULT '0',
+  `status_id` int(11) NOT NULL DEFAULT 0,
   `url` varchar(255) DEFAULT '',
-  `payment_details` text,
+  `payment_details` text DEFAULT NULL,
   `ip` varchar(20) NOT NULL DEFAULT '',
-  `total_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `total_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `note` varchar(1024) NOT NULL DEFAULT '',
-  `discount` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `coupon_discount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `discount` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `coupon_discount` decimal(10,2) NOT NULL DEFAULT 0.00,
   `coupon_code` varchar(255) NOT NULL DEFAULT '',
-  `separate_delivery` tinyint(1) DEFAULT '0',
-  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `lang_id` int(11) NOT NULL DEFAULT '0',
+  `separate_delivery` tinyint(1) DEFAULT 0,
+  `modified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `lang_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `login` (`user_id`),
   KEY `written_off` (`closed`),
@@ -814,18 +813,19 @@ DROP TABLE IF EXISTS `ok_orders_status`;
 CREATE TABLE `ok_orders_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `is_close` tinyint(1) NOT NULL DEFAULT '0',
+  `is_close` tinyint(1) NOT NULL DEFAULT 0,
   `color` varchar(6) NOT NULL DEFAULT 'ffffff',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
+  `status_1c` enum('new','accepted','to_delete','not_use') DEFAULT 'not_use',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_orders_status` (`id`, `name`, `is_close`, `color`, `position`) VALUES
-(1,	'Новые',	0,	'ffffff',	1),
-(2,	'Приняты',	1,	'ffffff',	2),
-(3,	'У курьера',	1,	'ffffff',	3),
-(4,	'Выполнены',	1,	'ffffff',	4),
-(5,	'Удалены',	0,	'ffffff',	5);
+INSERT INTO `ok_orders_status` (`id`, `name`, `is_close`, `color`, `position`, `status_1c`) VALUES
+(1,	'Новые',	0,	'ffffff',	1,	'not_use'),
+(2,	'Приняты',	1,	'ffffff',	2,	'not_use'),
+(3,	'У курьера',	1,	'ffffff',	3,	'not_use'),
+(4,	'Выполнены',	1,	'ffffff',	4,	'not_use'),
+(5,	'Удалены',	0,	'ffffff',	5,	'not_use');
 
 DROP TABLE IF EXISTS `ok_pages`;
 CREATE TABLE `ok_pages` (
@@ -837,9 +837,9 @@ CREATE TABLE `ok_pages` (
   `meta_description` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '0',
-  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `position` int(11) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `order_num` (`position`),
   KEY `url` (`url`)
@@ -852,10 +852,10 @@ CREATE TABLE `ok_payment_methods` (
   `module` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `currency_id` int(11) NOT NULL DEFAULT '0',
+  `currency_id` int(11) NOT NULL DEFAULT 0,
   `settings` text NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `position` int(11) NOT NULL DEFAULT 0,
   `image` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
@@ -866,22 +866,22 @@ DROP TABLE IF EXISTS `ok_products`;
 CREATE TABLE `ok_products` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(255) NOT NULL DEFAULT '',
-  `brand_id` int(11) DEFAULT '0',
+  `brand_id` int(11) DEFAULT 0,
   `name` varchar(512) NOT NULL DEFAULT '',
   `annotation` text NOT NULL,
   `description` text NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `position` int(11) NOT NULL DEFAULT 0,
   `meta_title` varchar(512) NOT NULL DEFAULT '',
   `meta_keywords` varchar(512) NOT NULL DEFAULT '',
   `meta_description` varchar(512) NOT NULL DEFAULT '',
   `created` timestamp NULL DEFAULT NULL,
-  `featured` tinyint(1) DEFAULT '0',
+  `featured` tinyint(1) DEFAULT 0,
   `external_id` varchar(36) NOT NULL DEFAULT '',
-  `rating` float(3,1) DEFAULT '0.0',
-  `votes` int(11) DEFAULT '0',
+  `rating` float(3,1) DEFAULT 0.0,
+  `votes` int(11) DEFAULT 0,
   `special` varchar(255) DEFAULT '',
-  `last_modify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_modify` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `main_category_id` int(11) DEFAULT NULL,
   `main_image_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -901,7 +901,7 @@ DROP TABLE IF EXISTS `ok_products_categories`;
 CREATE TABLE `ok_products_categories` (
   `product_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`product_id`,`category_id`),
   KEY `position` (`position`),
   KEY `product_id` (`product_id`),
@@ -922,13 +922,13 @@ CREATE TABLE `ok_products_features_values` (
 DROP TABLE IF EXISTS `ok_purchases`;
 CREATE TABLE `ok_purchases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) NOT NULL DEFAULT '0',
-  `product_id` int(11) DEFAULT '0',
-  `variant_id` int(11) DEFAULT '0',
+  `order_id` int(11) NOT NULL DEFAULT 0,
+  `product_id` int(11) DEFAULT 0,
+  `variant_id` int(11) DEFAULT 0,
   `product_name` varchar(255) NOT NULL DEFAULT '',
   `variant_name` varchar(255) NOT NULL DEFAULT '',
-  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `amount` int(11) NOT NULL DEFAULT '0',
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `amount` int(11) NOT NULL DEFAULT 0,
   `sku` varchar(255) NOT NULL DEFAULT '',
   `units` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -942,7 +942,7 @@ DROP TABLE IF EXISTS `ok_related_blogs`;
 CREATE TABLE `ok_related_blogs` (
   `post_id` int(11) NOT NULL,
   `related_id` int(11) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`post_id`,`related_id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -952,7 +952,7 @@ DROP TABLE IF EXISTS `ok_related_products`;
 CREATE TABLE `ok_related_products` (
   `product_id` int(11) NOT NULL,
   `related_id` int(11) NOT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`product_id`,`related_id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -967,8 +967,8 @@ CREATE TABLE `ok_seo_filter_patterns` (
   `title` varchar(512) DEFAULT '',
   `keywords` varchar(512) DEFAULT '',
   `meta_description` varchar(512) DEFAULT '',
-  `description` text,
-  `feature_id` int(11) DEFAULT '0',
+  `description` text DEFAULT NULL,
+  `feature_id` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_id_param_type_feature_id` (`category_id`,`type`,`feature_id`),
   KEY `category_id` (`category_id`),
@@ -982,7 +982,8 @@ CREATE TABLE `ok_settings` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
   `param` varchar(255) NOT NULL DEFAULT '',
   `value` text NOT NULL,
-  PRIMARY KEY (`setting_id`)
+  PRIMARY KEY (`setting_id`),
+  UNIQUE KEY `param` (`param`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
@@ -1010,12 +1011,13 @@ INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
 (154,	'site_logo',	'logo.png'),
 (155,	'gather_enabled',	'1'),
 (156,	'captcha_callback',	'1'),
-(157,	'captcha_type',	'default');
+(157,	'captcha_type',	'default'),
+(158,	'recaptcha_scores',	'a:3:{s:7:\"product\";d:0.5;s:4:\"cart\";d:0.69999999999999996;s:5:\"other\";d:0.20000000000000001;}');
 
 DROP TABLE IF EXISTS `ok_settings_lang`;
 CREATE TABLE `ok_settings_lang` (
   `param` varchar(128) NOT NULL,
-  `lang_id` int(11) NOT NULL DEFAULT '0',
+  `lang_id` int(11) NOT NULL DEFAULT 0,
   `value` text NOT NULL,
   PRIMARY KEY (`lang_id`,`param`),
   KEY `name` (`param`),
@@ -1027,7 +1029,7 @@ DROP TABLE IF EXISTS `ok_spec_img`;
 CREATE TABLE `ok_spec_img` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) NOT NULL DEFAULT '',
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1046,12 +1048,12 @@ CREATE TABLE `ok_support_info` (
   `id` tinyint(1) NOT NULL AUTO_INCREMENT,
   `temp_key` varchar(32) DEFAULT NULL,
   `temp_time` timestamp NULL DEFAULT NULL,
-  `new_messages` int(11) NOT NULL DEFAULT '0',
-  `balance` int(11) NOT NULL DEFAULT '0',
+  `new_messages` int(11) NOT NULL DEFAULT 0,
+  `balance` int(11) NOT NULL DEFAULT 0,
   `private_key` varchar(2048) DEFAULT NULL,
   `public_key` varchar(2048) DEFAULT NULL,
   `okay_public_key` varchar(2048) DEFAULT NULL,
-  `is_auto` tinyint(1) NOT NULL DEFAULT '1',
+  `is_auto` tinyint(1) NOT NULL DEFAULT 1,
   `accesses` varchar(2048) DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1065,9 +1067,9 @@ CREATE TABLE `ok_users` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `phone` varchar(32) NOT NULL DEFAULT '',
   `address` varchar(255) NOT NULL DEFAULT '',
-  `group_id` int(11) NOT NULL DEFAULT '0',
+  `group_id` int(11) NOT NULL DEFAULT 0,
   `last_ip` varchar(20) DEFAULT NULL,
-  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` timestamp NULL DEFAULT current_timestamp(),
   `remind_code` varchar(32) DEFAULT NULL,
   `remind_expire` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1081,15 +1083,15 @@ CREATE TABLE `ok_variants` (
   `product_id` int(11) NOT NULL,
   `sku` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
-  `weight` decimal(10,2) DEFAULT '0.00',
-  `price` decimal(14,2) NOT NULL DEFAULT '0.00',
+  `weight` decimal(10,2) DEFAULT 0.00,
+  `price` decimal(14,2) NOT NULL DEFAULT 0.00,
   `compare_price` decimal(14,2) DEFAULT NULL,
   `stock` mediumint(9) DEFAULT NULL,
-  `position` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT 0,
   `attachment` varchar(255) NOT NULL DEFAULT '',
   `external_id` varchar(36) NOT NULL DEFAULT '',
-  `currency_id` int(11) NOT NULL DEFAULT '0',
-  `feed` tinyint(1) DEFAULT '0',
+  `currency_id` int(11) NOT NULL DEFAULT 0,
+  `feed` tinyint(1) DEFAULT 0,
   `units` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
